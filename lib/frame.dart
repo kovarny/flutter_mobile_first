@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth_test_app/blank_page.dart';
-import 'package:flutter_firebase_auth_test_app/home_page.dart';
-import 'package:flutter_firebase_auth_test_app/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'desktop_frame.dart';
-import 'mobile_frame.dart';
-import 'navigator.dart';
 
 final List<GlobalKey<NavigatorState>> navigatorKeys =
     List.generate(4, (index) => GlobalKey<NavigatorState>());
 
 class Frame extends ConsumerWidget {
+  final MaterialPageRoute homePage, blankPage;
   final int count;
   int currentIndex = 0;
-  Frame({Key? key, this.count = 1}) : super(key: key) {}
+  Frame(
+      {Key? key,
+      this.count = 1,
+      required this.homePage,
+      required this.blankPage})
+      : super(key: key) {}
 
   @override
   Widget build(BuildContext context, WidgetRef ref) =>
@@ -25,40 +24,22 @@ class Frame extends ConsumerWidget {
                   (index) => Expanded(
                           child: Navigator(
                         key: navigatorKeys[index],
-                        initialRoute: index == 0
-                            ? TabNavigatorRoutes.root
-                            : TabNavigatorRoutes.blank,
-                        onGenerateInitialRoutes: (navigator, initialRoute) =>
-                            index == 0
-                                ? [
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            HomePage(navigatorKeys[0]))
-                                  ]
-                                : [
-                                    MaterialPageRoute(
-                                        builder: (context) => BlankPage(),
-                                        fullscreenDialog: true)
-                                  ],
-                        onGenerateRoute: (routeSettings) {
-                          print(
-                              'onGenerateRoute: ${index}, ${index < count - 1 ? index + 1 : count - 1}');
-                          return pageRouteBuilders(
-                              context,
-                              navigatorKeys[0]
-                              // navigatorKeys[
-                              //     index < count - 1 ? index + 1 : count - 1],
-                              ,
-                              routeSettings.name!);
-                          // return MaterialPageRoute(
-                          //   builder: (context) =>
-                          //   routeBuilders(
-                          //       context,
-                          //       navigatorKeys[index < count - 1
-                          //           ? index + 1
-                          //           : count - 1])[routeSettings.name]!(context),
 
-                          // );
+                        initialRoute: index == 0
+                            ? '/' //TabNavigatorRoutes.root
+                            : '/blank', //TabNavigatorRoutes.blank,
+                        // onGenerateInitialRoutes: (navigator, initialRoute) =>
+                        //     index == 0 ? [homePage] : [blankPage],
+                        onGenerateRoute: (routeSettings) {
+                          print('onGenerate: ${routeSettings}');
+                          // print(
+                          //     'onGenerateRoute: ${index}, ${index < count - 1 ? index + 1 : count - 1}');
+                          // return homePage;
+
+                          if (index == 0) return homePage;
+                          return blankPage;
+                          // pageRouteBuilders(
+                          //     context, navigatorKeys[0], routeSettings.name!);
                         },
                       ))))
           // <Widget>[

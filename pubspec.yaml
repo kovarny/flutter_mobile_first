@@ -25,8 +25,8 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
 
-# The following section is specific to Flutter packages.
-flutter:
-  # To add assets to your package, add an assets section, like this:
-  assets:
-    - assets/
+# # The following section is specific to Flutter packages.
+# flutter:
+#   # To add assets to your package, add an assets section, like this:
+#   assets:
+#     - assets/
