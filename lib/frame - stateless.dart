@@ -4,22 +4,7 @@ import 'base_page.dart';
 import 'blank_page.dart';
 import 'navigator.dart';
 
-class MyWidget extends InheritedWidget {
-  final String data;
-
-  MyWidget({required this.data, required Widget child}) : super(child: child);
-
-  static MyWidget of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<MyWidget>()!;
-  }
-
-  @override
-  bool updateShouldNotify(MyWidget oldWidget) {
-    return data != oldWidget.data;
-  }
-}
-
-class Frame extends StatefulWidget {
+class Frame extends StatelessWidget {
   // final void Function(BuildContext context, int index, PageRoute page) pushPage;
 
   static GlobalKey<NavigatorState> getNextNavigatorKey(
@@ -54,16 +39,16 @@ class Frame extends StatefulWidget {
     navigatorKeys[MediaQuery.of(context).size.width > 600 ? index : 0]
         .currentState
         ?.push(route);
-    // Status.of(context).
-    // navigatorStatus[MediaQuery.of(context).size.width > 600 ? index : 0] = true;
   }
 
+  static final List<bool> navigatorStatus = List.generate(3, (index) => false);
   static final List<GlobalKey<NavigatorState>> navigatorKeys =
       List.generate(3, (index) => GlobalKey<NavigatorState>());
 
   // final PageRoute homePage, blankPage;
   final onGenerateRoute;
-
+  // final int count;
+  int currentIndex = 0;
   Frame({
     Key? key,
     // this.count = 3,
@@ -73,86 +58,101 @@ class Frame extends StatefulWidget {
   }) : super(key: key) {}
 
   @override
-  State<Frame> createState() => _FrameState();
-}
+  Widget build(BuildContext context) => MediaQuery.of(context).size.width > 600
+      ? Row(
+          children: List.generate(
+              3,
+              (index) => Expanded(
+                      child: CustomNavigator(
+                    key: navigatorKeys[index],
+                    // initialRoute: index == 0
+                    //     ? '/' //TabNavigatorRoutes.root
+                    //     : '/blank', //TabNavigatorRoutes.blank,
+                    // onGenerateInitialRoutes: index == 0
+                    //     ? (navigator, initialRoute) => [homePage]
+                    //     : (navigator, initialRoute) => [blankPage],
+                    //onUnknownRoute: (settings) => blankPage,
+                    // MaterialPageRoute(
+                    //     builder: (context) => BlankPage(),
+                    //     settings: settings),
+                    onGenerateRoute: onGenerateRoute,
+                    // index == 0
+                    //     ? (RouteSettings r) {
+                    //         // return homePage;
+                    //         return PageRouteBuilder(
+                    //             pageBuilder: (context, a, b) => BlankPage(),
+                    //             settings: r);
+                    //       }
+                    //     : (RouteSettings r) {
+                    //         // return blankPage;
+                    //         return PageRouteBuilder(
+                    //             pageBuilder: (context, a, b) => BlankPage(),
+                    //             settings: r);
+                    //       }
+                    //     (RouteSettings routeSettings) {
+                    //   // print(
+                    //   //     'onGenerate: ${routeSettings} ${routeSettings.name}');
+                    //   // if (index == 0)
+                    //   //   return homePage;
+                    //   // else
+                    //   //   return blankPage;
 
-class _FrameState extends State<Frame> {
-  // final int count;
-  int currentIndex = 0;
-  final List<bool> navigatorStatus = List.generate(3, (index) => false);
+                    //   return pageRouteBuilders(context,
+                    //       navigatorKeys[index], routeSettings.name!);
+                    // },
+                  ))))
+      // <Widget>[
+      //     Expanded(
+      //         child: TabNavigator(
+      //       navigatorKey: navigatorKey,
+      //       tabItem: TabItem.blue,
+      //     )),
+      //     Expanded(
+      //         child: TabNavigator(
+      //       navigatorKey: navigatorKey1,
+      //       tabItem: TabItem.red,
+      //     )),
+      //   ])
+      : Navigator(
+          key: navigatorKeys[0],
+          // initialRoute: index == 0
+          //     ? '/' //TabNavigatorRoutes.root
+          //     : '/blank', //TabNavigatorRoutes.blank,
+          // onGenerateInitialRoutes: index == 0
+          //     ? (navigator, initialRoute) => [homePage]
+          //     : (navigator, initialRoute) => [blankPage],
+          //onUnknownRoute: (settings) => blankPage,
+          // MaterialPageRoute(
+          //     builder: (context) => BlankPage(),
+          //     settings: settings),
+          onGenerateRoute: onGenerateRoute);
 
-  @override
-  Widget build(BuildContext context) {
-    print(MyWidget.of(context).data);
-    return MediaQuery.of(context).size.width > 600
-        ? Row(
-            children: List.generate(
-                3,
-                (index) => Expanded(
-                        child: CustomNavigator(
-                      key: Frame.navigatorKeys[index],
-                      // initialRoute: index == 0
-                      //     ? '/' //TabNavigatorRoutes.root
-                      //     : '/blank', //TabNavigatorRoutes.blank,
-                      // onGenerateInitialRoutes: index == 0
-                      //     ? (navigator, initialRoute) => [homePage]
-                      //     : (navigator, initialRoute) => [blankPage],
-                      //onUnknownRoute: (settings) => blankPage,
-                      // MaterialPageRoute(
-                      //     builder: (context) => BlankPage(),
-                      //     settings: settings),
-                      onGenerateRoute: widget.onGenerateRoute,
-                      // index == 0
-                      //     ? (RouteSettings r) {
-                      //         // return homePage;
-                      //         return PageRouteBuilder(
-                      //             pageBuilder: (context, a, b) => BlankPage(),
-                      //             settings: r);
-                      //       }
-                      //     : (RouteSettings r) {
-                      //         // return blankPage;
-                      //         return PageRouteBuilder(
-                      //             pageBuilder: (context, a, b) => BlankPage(),
-                      //             settings: r);
-                      //       }
-                      //     (RouteSettings routeSettings) {
-                      //   // print(
-                      //   //     'onGenerate: ${routeSettings} ${routeSettings.name}');
-                      //   // if (index == 0)
-                      //   //   return homePage;
-                      //   // else
-                      //   //   return blankPage;
-
-                      //   return pageRouteBuilders(context,
-                      //       navigatorKeys[index], routeSettings.name!);
-                      // },
-                    ))))
-        // <Widget>[
-        //     Expanded(
-        //         child: TabNavigator(
-        //       navigatorKey: navigatorKey,
-        //       tabItem: TabItem.blue,
-        //     )),
-        //     Expanded(
-        //         child: TabNavigator(
-        //       navigatorKey: navigatorKey1,
-        //       tabItem: TabItem.red,
-        //     )),
-        //   ])
-        : Navigator(
-            key: Frame.navigatorKeys[0],
-            // initialRoute: index == 0
-            //     ? '/' //TabNavigatorRoutes.root
-            //     : '/blank', //TabNavigatorRoutes.blank,
-            // onGenerateInitialRoutes: index == 0
-            //     ? (navigator, initialRoute) => [homePage]
-            //     : (navigator, initialRoute) => [blankPage],
-            //onUnknownRoute: (settings) => blankPage,
-            // MaterialPageRoute(
-            //     builder: (context) => BlankPage(),
-            //     settings: settings),
-            onGenerateRoute: widget.onGenerateRoute);
-  }
+  // push(value, navigatorKey) {
+  //   print('onPush: $value');
+  //   navigatorKey.currentState!.push(PageRouteBuilder(
+  //     pageBuilder: (context, animation1, animation2) => routeBuilders(
+  //       context,
+  //       TabNavigatorRoutes.detail,
+  //     )[TabNavigatorRoutes.detail]!(
+  //       context,
+  //     ),
+  //     transitionDuration: Duration.zero,
+  //     reverseTransitionDuration: Duration.zero,
+  //   ));
+  //   // navigatorKey1.currentState!.push(PageRouteBuilder(
+  //   //   pageBuilder: (context, animation1, animation2) =>
+  //   //       routeBuilders[TabNavigatorRoutes.detail]!(context),
+  //   //   transitionDuration: Duration.zero,
+  //   //   reverseTransitionDuration: Duration.zero,
+  //   // )
+  // }
+  // Navigator(onGenerateRoute: (RouteSettings settings) {
+  //   // print('onGenerateRoute: ${settings}');
+  //   // if (settings.name == '/' || settings.name == 'search') {
+  //   if (settings.name == '/' || settings.name == 'vacancies') {
+  //     return PageRouteBuilder(pageBuilder: (_, __, ___) => DashboardPage());
+  //   }
+  // });
 }
 
 // MaterialPageRoute pageRouteBuilders(BuildContext context,
